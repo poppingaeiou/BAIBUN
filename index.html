@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>โรงพยาบาลสะเดา - ผู้ช่วยอัจฉริยะ</title>
+    <title>โรงพยาบาลสะเดา - น้องสะเดา ผู้ช่วยอัจฉริยะ</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -40,10 +40,12 @@
 
         /* การ์ตูนมาสคอต (มีแอนิเมชั่นลอยตัว) */
         .hero-mascot {
-            width: 180px; height: auto;
+            width: 200px; /* ปรับขนาดขึ้นเล็กน้อยให้เหมาะกับรูปใหม่ */
+            height: auto;
             margin-bottom: 25px;
             filter: drop-shadow(0 15px 25px rgba(13, 148, 136, 0.2));
             animation: float 4s ease-in-out infinite;
+            border-radius: 20px; /* เพิ่มความมนให้รูปภาพใหม่ */
         }
 
         .hero-title {
@@ -53,7 +55,7 @@
         }
         .hero-subtitle {
             font-size: 1.1rem; color: #52796f; margin-top: 10px;
-            max-width: 400px; line-height: 1.6;
+            max-width: 450px; line-height: 1.6;
         }
 
         /* --- 3. CHATBOT WIDGET (ปุ่มและหน้าต่างแชท) --- */
@@ -70,9 +72,14 @@
             box-shadow: 0 8px 25px rgba(13, 148, 136, 0.4);
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden; /* ซ่อนส่วนเกินของรูปสี่เหลี่ยมในปุ่มกลม */
         }
         /* ไอคอนในการ์ตูน */
-        .chat-fab-icon { width: 45px; height: 45px; animation: bounce-gentle 2s infinite; }
+        .chat-fab-icon { 
+            width: 100%; height: 100%; 
+            object-fit: cover; /* ให้รูปเต็มปุ่ม */
+            animation: bounce-gentle 2s infinite; 
+        }
         
         /* ป้ายข้อความ */
         .chat-fab-label {
@@ -112,8 +119,9 @@
             position: relative;
         }
         .chat-header-mascot {
-            width: 50px; height: 50px; background: white; border-radius: 50%; padding: 4px;
+            width: 50px; height: 50px; background: white; border-radius: 50%; padding: 2px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            object-fit: cover; /* ให้รูปเต็มวงกลม */
         }
         .chat-header-info h3 { margin: 0; font-size: 1.1rem; }
         .chat-header-info p { margin: 2px 0 0; font-size: 0.8rem; opacity: 0.95; display: flex; align-items: center; gap: 5px;}
@@ -188,23 +196,23 @@
 <body>
 
     <div class="hero-section">
-        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" alt="Mascot" class="hero-mascot">
+        <img src="https://img5.pic.in.th/file/secure-sv1/c368f6f06db807a94db5c7cf939baf76.png" alt="น้องสะเดา" class="hero-mascot">
         <h1 class="hero-title">โรงพยาบาลสะเดา</h1>
-        <p class="hero-subtitle">ปรึกษาสุขภาพกับ <b>"น้องใบบุญ"</b> <br> แพทย์แผนไทยและสมุนไพรครบวงจร</p>
+        <p class="hero-subtitle">ปรึกษาสุขภาพกับ <b>"น้องสะเดา"</b> <br> ผู้ช่วยแพทย์แผนไทยและแพทย์แผนจีน</p>
     </div>
 
     <div class="chat-fab-container">
-        <div class="chat-fab-label">ปรึกษาน้องใบบุญ 👇</div>
+        <div class="chat-fab-label">ปรึกษาน้องสะเดา 👇</div>
         <div class="chat-fab" onclick="toggleChat()">
-            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712070.png" class="chat-fab-icon">
+            <img src="https://img5.pic.in.th/file/secure-sv1/c368f6f06db807a94db5c7cf939baf76.png" class="chat-fab-icon" alt="น้องสะเดา">
         </div>
     </div>
 
     <div class="chat-window" id="chatWindow">
         <div class="chat-header">
-            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" class="chat-header-mascot">
+            <img src="https://img5.pic.in.th/file/secure-sv1/c368f6f06db807a94db5c7cf939baf76.png" class="chat-header-mascot" alt="น้องสะเดา">
             <div class="chat-header-info">
-                <h3>น้องใบบุญ (AI)</h3>
+                <h3>น้องสะเดา (AI)</h3>
                 <p><span class="status-dot"></span> ออนไลน์</p>
             </div>
             <i class="fas fa-times close-btn" onclick="toggleChat()"></i>
@@ -212,8 +220,8 @@
         
         <div class="chat-body" id="chatBody">
             <div class="msg msg-bot">
-                สวัสดีค่ะ 🙏 <b>น้องใบบุญ</b> ยินดีให้บริการค่ะ <br>
-                สอบถามเรื่อง <b>สมุนไพร</b> หรือเช็ค <b>คิวว่าง</b> ได้เลยนะคะ 😊
+                สวัสดีค่ะ 🙏 <b>น้องสะเดา</b> ผู้ช่วยแพทย์แผนไทยและแผนจีน ยินดีให้บริการค่ะ <br>
+                สอบถามเรื่อง <b>สมุนไพร</b>, <b>การฝังเข็ม</b> หรือเช็คคิวได้เลยนะคะ 😊
             </div>
         </div>
         
