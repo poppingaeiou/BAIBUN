@@ -8,16 +8,15 @@
     <style>
         :root { --primary: #0d9488; --bg: #f8fafc; }
         body { font-family: 'Prompt', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        .header { background: var(--primary); color: white; padding: 15px; text-align: center; font-size: 1.1rem; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header { background: var(--primary); color: white; padding: 15px; text-align: center; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         .msg { padding: 12px 18px; border-radius: 18px; max-width: 85%; line-height: 1.6; font-size: 0.95rem; }
-        .bot { background: white; align-self: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; white-space: pre-wrap; }
+        .bot { background: white; align-self: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.05); white-space: pre-wrap; border: 1px solid #f1f5f9; }
         .user { background: var(--primary); color: white; align-self: flex-end; }
         .footer { padding: 15px; background: white; display: flex; gap: 10px; border-top: 1px solid #e2e8f0; }
         input { flex: 1; border: 1px solid #cbd5e1; padding: 12px 20px; border-radius: 25px; outline: none; font-family: 'Prompt'; }
-        button { background: var(--primary); color: white; border: none; padding: 0 25px; border-radius: 25px; cursor: pointer; transition: 0.2s; }
-        button:hover { opacity: 0.9; }
-        .loading { display: none; text-align: center; font-size: 12px; color: #64748b; margin: 10px; }
+        button { background: var(--primary); color: white; border: none; padding: 0 25px; border-radius: 25px; cursor: pointer; }
+        .loader { display: none; text-align: center; font-size: 12px; color: #64748b; margin: 10px; }
     </style>
 </head>
 <body>
@@ -25,14 +24,15 @@
     <div class="chat-container" id="chatBox">
         <div class="msg bot">สวัสดีค่ะ <b>ผู้รับบริการ</b> มีข้อสงสัยเรื่องการใช้ยา ข้อควรระวัง หรือยาที่กินร่วมกันไม่ได้ สอบถามน้องใบบุญได้เลยนะคะ</div>
     </div>
-    <div class="loading" id="loader">น้องใบบุญกำลังวิเคราะห์ข้อมูล...</div>
+    <div id="loading" class="loader">น้องใบบุญกำลังวิเคราะห์ข้อมูล...</div>
     <div class="footer">
         <input type="text" id="userInput" placeholder="พิมพ์ชื่อยาหรืออาการ..." autocomplete="off">
         <button onclick="send()">ส่ง</button>
     </div>
 
     <script>
-        const WEB_APP_URL = "URL_WEB_APP_ที่ได้จากการ_DEPLOY_ใหม่"; 
+        // *** สำคัญ: นำ URL ที่ได้จากขั้นตอน "Deploy" ใหม่มาใส่ที่นี่ ***
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQKDaHWzzb2PIuend4HS62cDD0qrGQmtFOzvKMYBzNGcv7Wj4LxVsTz_HfAmtvJbbzsA/exec"; 
 
         async function send() {
             const input = document.getElementById('userInput');
@@ -41,7 +41,7 @@
 
             append('user', text);
             input.value = '';
-            document.getElementById('loader').style.display = 'block';
+            document.getElementById('loading').style.display = 'block';
 
             try {
                 const response = await fetch(WEB_APP_URL, {
@@ -50,11 +50,16 @@
                     body: JSON.stringify({ message: text })
                 });
                 const data = await response.json();
-                document.getElementById('loader').style.display = 'none';
-                append('bot', data.reply);
+                document.getElementById('loading').style.display = 'none';
+                
+                if(data.status === 'success') {
+                    append('bot', data.reply);
+                } else {
+                    append('bot', "ขออภัยค่ะ ระบบขัดข้อง: " + data.reply);
+                }
             } catch (err) {
-                document.getElementById('loader').style.display = 'none';
-                append('bot', "ขออภัยค่ะ เกิดข้อผิดพลาดในการเชื่อมต่อ");
+                document.getElementById('loading').style.display = 'none';
+                append('bot', "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ (Connection Error)");
             }
         }
 
@@ -62,7 +67,7 @@
             const box = document.getElementById('chatBox');
             const div = document.createElement('div');
             div.className = `msg ${sender}`;
-            div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            div.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
             box.appendChild(div);
             box.scrollTop = box.scrollHeight;
         }
