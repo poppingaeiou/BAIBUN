@@ -1,301 +1,52 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>น้องใบบุญ - โรงพยาบาลสะเดา</title>
+<style>
+    /* เพิ่มสไตล์ปุ่มลิงก์ภายนอก */
+    .service-links {
+        display: flex;
+        padding: 10px 20px;
+        gap: 10px;
+        background: #f0fdfa;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .link-btn {
+        flex: 1;
+        text-decoration: none;
+        background: white;
+        color: var(--primary);
+        padding: 8px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        text-align: center;
+        border: 1px solid var(--primary);
+        font-weight: 500;
+        transition: 0.3s;
+    }
+    .link-btn:hover {
+        background: var(--primary);
+        color: white;
+    }
+    .link-btn i { margin-right: 5px; }
+</style>
+
+<div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+        </div>
+
+    <div class="service-links">
+        <a href="https://poppingaeiou.github.io/TTMSADAOHOS/" target="_blank" class="link-btn">
+            <i class="fas fa-calendar-check"></i> จองคิวออนไลน์
+        </a>
+        <a href="https://poppingaeiou.github.io/TTMTCMSADAO/" target="_blank" class="link-btn">
+            <i class="fas fa-stethscope"></i> บริการของเรา
+        </a>
+    </div>
     
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <div class="chat-body" id="chatBody">
+        </div>
 
-    <style>
-        :root {
-            --primary: #0f766e;
-            --primary-gradient: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-            --accent: #2dd4bf;
-            --bg-page: #f8fafc;
-            --chat-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-        }
-
-        body {
-            font-family: 'Prompt', sans-serif;
-            background-color: var(--bg-page);
-            background-image: radial-gradient(circle at 0% 0%, #e0f2f1 0%, transparent 50%),
-                              radial-gradient(circle at 100% 100%, #f0fdfa 0%, transparent 50%);
-            margin: 0; padding: 0;
-            min-height: 100vh;
-            display: flex; flex-direction: column;
-            color: var(--text-main);
-        }
-
-        /* --- Hero Section --- */
-        .hero-section {
-            flex: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 20px; text-align: center;
-        }
-
-        .hero-mascot {
-            width: 160px; filter: drop-shadow(0 20px 13px rgba(0,0,0,0.03));
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .hero-title {
-            font-size: 2.2rem; font-weight: 600; color: var(--primary);
-            margin: 20px 0 10px;
-        }
-
-        .hero-subtitle {
-            color: var(--text-muted); font-size: 1.1rem; max-width: 500px;
-        }
-
-        /* --- Floating Button --- */
-        .chat-fab-container {
-            position: fixed; bottom: 30px; right: 30px; z-index: 1000;
-            display: flex; flex-direction: column; align-items: flex-end;
-        }
-
-        .chat-fab {
-            width: 65px; height: 65px; border-radius: 20px;
-            background: var(--primary-gradient);
-            box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.4);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .chat-fab:hover { transform: scale(1.1) rotate(5deg); }
-
-        .chat-fab-label {
-            background: white; padding: 8px 15px; border-radius: 12px;
-            font-size: 0.85rem; margin-bottom: 12px; font-weight: 500;
-            box-shadow: var(--shadow); border: 1px solid #f1f5f9;
-        }
-
-        /* --- Chat Window --- */
-        .chat-window {
-            position: fixed; bottom: 110px; right: 30px;
-            width: 400px; height: 600px; max-height: 85vh;
-            background: var(--chat-bg); border-radius: 24px;
-            display: none; flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            overflow: hidden; z-index: 999; border: 1px solid rgba(0,0,0,0.05);
-            animation: slideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        }
-
-        .chat-header {
-            background: var(--primary-gradient); color: white;
-            padding: 20px; display: flex; align-items: center; gap: 15px;
-        }
-
-        .chat-header-mascot {
-            width: 45px; height: 45px; background: white; border-radius: 15px; padding: 5px;
-        }
-
-        .chat-body {
-            flex: 1; overflow-y: auto; padding: 20px;
-            display: flex; flex-direction: column; gap: 15px;
-            background-image: radial-gradient(#e5e7eb 0.5px, transparent 0.5px);
-            background-size: 20px 20px;
-        }
-
-        /* --- Message Bubbles --- */
-        .msg {
-            max-width: 85%; padding: 12px 16px; border-radius: 18px;
-            font-size: 0.95rem; line-height: 1.6; word-wrap: break-word;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .msg-bot {
-            background: white; color: var(--text-main);
-            align-self: flex-start; border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            border: 1px solid #f1f5f9;
-        }
-
-        .msg-user {
-            background: var(--primary-gradient); color: white;
-            align-self: flex-end; border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.2);
-        }
-
-        /* --- Quick Actions --- */
-        .quick-actions {
-            display: flex; gap: 8px; overflow-x: auto; padding: 0 20px 10px;
-            scrollbar-width: none;
-        }
-        .quick-btn {
-            white-space: nowrap; background: white; border: 1px solid var(--primary);
-            color: var(--primary); padding: 6px 14px; border-radius: 20px;
-            font-size: 0.8rem; cursor: pointer; transition: 0.2s;
-        }
-        .quick-btn:hover { background: var(--primary); color: white; }
-
-        /* --- Input Area --- */
-        .chat-footer {
-            padding: 20px; background: white; border-top: 1px solid #f1f5f9;
-            display: flex; gap: 10px;
-        }
-
-        .chat-input {
-            flex: 1; border: 1px solid #e2e8f0; background: #f8fafc;
-            padding: 12px 18px; border-radius: 14px; outline: none;
-            font-family: 'Prompt'; transition: 0.3s;
-        }
-
-        .chat-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.1); }
-
-        .send-btn {
-            width: 48px; height: 48px; border-radius: 14px;
-            background: var(--primary-gradient); color: white; border: none;
-            cursor: pointer; transition: 0.3s;
-        }
-
-        .send-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3); }
-
-        /* --- Animations --- */
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-        /* Mobile Adjustments */
-        @media (max-width: 480px) {
-            .chat-window {
-                width: 100%; height: 100%; bottom: 0; right: 0; max-height: 100vh; border-radius: 0;
-            }
-            .chat-fab-container { bottom: 20px; right: 20px; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="hero-section">
-        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" alt="Mascot" class="hero-mascot">
-        <h1 class="hero-title">โรงพยาบาลสะเดา</h1>
-        <p class="hero-subtitle">ดูแลคุณด้วยหัวใจ ผสานเทคโนโลยี AI <br>ให้ <b>"น้องใบบุญ"</b> ช่วยดูแลสุขภาพวันนี้</p>
+    <div class="quick-actions">
+        <button class="quick-btn" onclick="quickSend('ขอนัดจองคิวบริการ')">📅 จองคิว</button>
+        <button class="quick-btn" onclick="quickSend('ขอดูข้อมูลบริการแผนไทยและจีน')">🏥 ข้อมูลบริการ</button>
+        <button class="quick-btn" onclick="quickSend('มียาแก้ปวดแนะนำไหม')">🌿 แนะนำยา</button>
     </div>
-
-    <div class="chat-fab-container">
-        <div class="chat-fab-label" id="fabLabel">สอบถามน้องใบบุญ 🌿</div>
-        <div class="chat-fab" onclick="toggleChat()">
-            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712070.png" width="40">
-        </div>
+    
     </div>
-
-    <div class="chat-window" id="chatWindow">
-        <div class="chat-header">
-            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" class="chat-header-mascot">
-            <div style="flex:1">
-                <div style="font-weight: 600; font-size: 1.1rem;">น้องใบบุญ (AI)</div>
-                <div style="font-size: 0.75rem; opacity: 0.9;"><i class="fas fa-circle" style="color:#4ade80; font-size: 0.6rem;"></i> พร้อมให้บริการค่ะ</div>
-            </div>
-            <i class="fas fa-times" style="cursor:pointer; padding: 5px;" onclick="toggleChat()"></i>
-        </div>
-        
-        <div class="chat-body" id="chatBody">
-            <div class="msg msg-bot">
-                สวัสดีค่ะ <b>น้องใบบุญ</b> จาก รพ.สะเดา ยินดีให้บริการค่ะ 🙏<br>
-                ปรึกษาเรื่อง <b>ยาสมุนไพร</b> หรือ <b>จองคิว</b> นวดแผนไทยได้เลยนะค๊า 😊
-            </div>
-        </div>
-
-        <div class="quick-actions">
-            <button class="quick-btn" onclick="quickSend('สมุนไพรแก้ปวดเมื่อย')">🌿 สมุนไพรแก้ปวด</button>
-            <button class="quick-btn" onclick="quickSend('แนะนำยาฟ้าทะลายโจร')">💊 ฟ้าทะลายโจร</button>
-            <button class="quick-btn" onclick="quickSend('ตรวจสอบคิวว่างวันนี้')">📅 เช็คคิวว่าง</button>
-        </div>
-
-        <div style="display:none; padding: 0 20px 10px; font-size: 0.8rem; color: var(--text-muted);" id="typingStatus">
-            น้องใบบุญกำลังหาคำตอบ...
-        </div>
-
-        <div class="chat-footer">
-            <input type="text" id="chatInput" class="chat-input" placeholder="พิมพ์ข้อความของคุณ..." autocomplete="off">
-            <button class="send-btn" onclick="sendMessage()">
-                <i class="fas fa-paper-plane"></i>
-            </button>
-        </div>
-    </div>
-
-    <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQKDaHWzzb2PIuend4HS62cDD0qrGQmtFOzvKMYBzNGcv7Wj4LxVsTz_HfAmtvJbbzsA/exec"; 
-
-        function toggleChat() {
-            const win = document.getElementById('chatWindow');
-            const label = document.getElementById('fabLabel');
-            if (win.style.display === 'flex') {
-                win.style.display = 'none';
-                label.style.display = 'block';
-            } else {
-                win.style.display = 'flex';
-                label.style.display = 'none';
-                setTimeout(() => document.getElementById('chatInput').focus(), 300);
-                scrollToBottom();
-            }
-        }
-
-        function appendMessage(text, sender) {
-            const body = document.getElementById('chatBody');
-            const div = document.createElement('div');
-            div.className = `msg msg-${sender}`;
-            
-            // ทำให้รองรับตัวหนาแบบง่ายๆ
-            let formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-            div.innerHTML = formattedText.replace(/\n/g, '<br>');
-            
-            body.appendChild(div);
-            scrollToBottom();
-        }
-
-        function scrollToBottom() {
-            const body = document.getElementById('chatBody');
-            body.scrollTop = body.scrollHeight;
-        }
-
-        function quickSend(text) {
-            document.getElementById('chatInput').value = text;
-            sendMessage();
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const text = input.value.trim();
-            if(!text) return;
-
-            appendMessage(text, 'user');
-            input.value = '';
-            
-            const typing = document.getElementById('typingStatus');
-            typing.style.display = 'block';
-            scrollToBottom();
-
-            try {
-                const response = await fetch(WEB_APP_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "text/plain" },
-                    body: JSON.stringify({ message: text })
-                });
-                
-                const data = await response.json();
-                typing.style.display = 'none';
-                
-                if(data.status === 'success') {
-                    appendMessage(data.reply, 'bot');
-                } else {
-                    appendMessage("⚠️ ขออภัยค่ะ: " + data.reply, 'bot');
-                }
-
-            } catch (err) {
-                typing.style.display = 'none';
-                appendMessage("❌ ขัดข้อง: กรุณาลองใหม่อีกครั้งนะคะ", 'bot');
-            }
-        }
-
-        document.getElementById('chatInput').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') sendMessage();
-        });
-    </script>
-</body>
-</html>
