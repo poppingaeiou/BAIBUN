@@ -3,34 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>น้องสะเดา AI - รพ.สะเดา</title>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>น้องสะเดา AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #0d9488; --bg: #f8fafc; }
-        body { font-family: 'Prompt', sans-serif; background: #e0f7fa; margin: 0; padding: 0; }
+        :root { --primary: #0d9488; --radius: 20px; }
+        body { font-family: 'Prompt', sans-serif; background: #e0f2f1; margin: 0; padding: 0; overflow: hidden; }
         
-        .chat-fab { position: fixed; bottom: 25px; right: 20px; width: 65px; height: 65px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1000; cursor: pointer; }
-        .chat-fab img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .chat-fab { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000; cursor: pointer; }
+        .chat-fab img { width: 100%; height: 100%; border-radius: 50%; }
 
-        .chat-window { position: fixed; bottom: 100px; right: 20px; width: 360px; max-width: calc(100% - 40px); height: 580px; max-height: 75vh; background: white; border-radius: 20px; display: none; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 999; overflow: hidden; animation: popIn 0.3s ease; }
+        .chat-window { position: fixed; bottom: 90px; right: 15px; width: 350px; max-width: calc(100% - 30px); height: 500px; max-height: 70vh; background: white; border-radius: var(--radius); display: none; flex-direction: column; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 999; overflow: hidden; border: 1px solid #eee; }
         
-        .chat-header { background: var(--primary); color: white; padding: 15px; display: flex; align-items: center; gap: 10px; }
+        .chat-header { background: var(--primary); color: white; padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
         .chat-header img { width: 40px; height: 40px; border-radius: 50%; background: white; }
         
-        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: var(--bg); display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 10px 15px; border-radius: 18px; max-width: 85%; font-size: 0.95rem; line-height: 1.4; word-wrap: break-word; }
-        .msg-bot { background: white; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 14px; border-radius: 15px; max-width: 85%; font-size: 0.9rem; line-height: 1.4; word-wrap: break-word; }
+        .msg-bot { background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); align-self: flex-start; border-bottom-left-radius: 2px; }
         .msg-user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
 
-        .quick-replies { padding: 10px; display: flex; gap: 8px; overflow-x: auto; background: white; border-top: 1px solid #eee; }
-        .quick-btn { border: 1px solid var(--primary); background: white; color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
+        .quick-replies { padding: 8px; display: flex; gap: 6px; overflow-x: auto; background: white; border-top: 1px solid #eee; }
+        .quick-btn { border: 1px solid var(--primary); background: white; color: var(--primary); padding: 5px 12px; border-radius: 15px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; }
 
         .chat-footer { padding: 10px; display: flex; gap: 8px; background: white; border-top: 1px solid #eee; }
-        .chat-input { flex: 1; border: none; background: #f1f5f9; padding: 10px 15px; border-radius: 20px; outline: none; font-family: 'Prompt'; }
-        .send-btn { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
-
-        @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        .chat-input { flex: 1; border: none; background: #f1f5f9; padding: 8px 15px; border-radius: 20px; outline: none; font-size: 0.9rem; }
+        .send-btn { background: var(--primary); color: white; border: none; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -42,22 +40,21 @@
     <div class="chat-window" id="chatWindow">
         <div class="chat-header">
             <img src="https://img5.pic.in.th/file/secure-sv1/c368f6f06db807a94db5c7cf939baf76.png">
-            <div style="flex:1"><b>น้องสะเดา (AI)</b><br><small>ออนไลน์ • รพ.สะเดา</small></div>
+            <div style="flex:1"><b style="font-size: 0.95rem;">น้องสะเดา (AI)</b><br><small style="font-size: 0.75rem;">ออนไลน์ • พร้อมให้บริการค่ะ</small></div>
             <i class="fas fa-times" onclick="toggleChat()" style="cursor:pointer"></i>
         </div>
         
         <div class="chat-body" id="chatBody">
-            <div class="msg msg-bot">สวัสดีค่ะ 🙏 น้องสะเดายินดีให้บริการค่ะ ปรึกษาเรื่องยาสมุนไพร หรือเช็คคิวว่างวันนี้ได้เลยนะคะ 😊</div>
+            <div class="msg msg-bot">สวัสดีค่ะ 🙏 น้องสะเดายินดีให้บริการค่ะ ปรึกษาเรื่องยาหรือเช็คคิวได้เลยนะคะ 😊</div>
         </div>
 
         <div class="quick-replies">
-            <button class="quick-btn" onclick="quickAsk('วันนี้มีคิวว่างกี่โมงบ้าง')">🕒 คิวว่างวันนี้</button>
+            <button class="quick-btn" onclick="quickAsk('เช็คคิวว่างวันนี้')">🕒 คิวว่างวันนี้</button>
             <button class="quick-btn" onclick="quickAsk('แนะนำสมุนไพรแก้ปวดเมื่อย')">🌿 ยาแก้ปวด</button>
-            <button class="quick-btn" onclick="quickAsk('บริการแพทย์แผนจีนมีอะไรบ้าง')">📍 แผนจีน</button>
         </div>
 
         <div class="chat-footer">
-            <input type="text" id="chatInput" class="chat-input" placeholder="พิมพ์ข้อความที่นี่...">
+            <input type="text" id="chatInput" placeholder="พิมพ์ถามน้องสะเดา..." autocomplete="off">
             <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
@@ -70,10 +67,7 @@
             win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        function quickAsk(text) {
-            document.getElementById('chatInput').value = text;
-            sendMessage();
-        }
+        function quickAsk(t) { document.getElementById('chatInput').value = t; sendMessage(); }
 
         async function sendMessage() {
             const input = document.getElementById('chatInput');
@@ -89,22 +83,20 @@
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({ message: msg })
                 });
-                
                 const data = await res.json();
-                appendMsg(data.reply || "ขออภัยค่ะ ลองใหม่อีกครั้งนะคะ", 'bot');
+                appendMsg(data.reply, 'bot');
             } catch (e) {
-                console.error(e);
-                appendMsg("❌ การเชื่อมต่อขัดข้อง กรุณาลองใหม่ในภายหลังค่ะ", 'bot');
+                appendMsg("ขออภัยค่ะ ระบบใช้เวลาประมวลผลนานเกินไป รบกวนกดถามใหม่อีกครั้งนะคะ 🙏", 'bot');
             }
         }
 
-        function appendMsg(text, sender) {
-            const body = document.getElementById('chatBody');
-            const div = document.createElement('div');
-            div.className = `msg msg-${sender}`;
-            div.innerHTML = text.replace(/\n/g, '<br>');
-            body.appendChild(div);
-            body.scrollTop = body.scrollHeight;
+        function appendMsg(t, s) {
+            const b = document.getElementById('chatBody');
+            const d = document.createElement('div');
+            d.className = `msg msg-${s}`;
+            d.innerHTML = t.replace(/\n/g, '<br>');
+            b.appendChild(d);
+            b.scrollTop = b.scrollHeight;
         }
     </script>
 </body>
