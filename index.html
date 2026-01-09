@@ -2,79 +2,162 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>น้องใบบุญ - รพ.สะเดา</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>โรงพยาบาลสะเดา - น้องใบบุญ AI</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        :root { --primary: #0d9488; --bg: #f8fafc; }
-        body { font-family: 'Prompt', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; height: 100vh; }
-        .header { background: var(--primary); color: white; padding: 15px; text-align: center; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
-        .msg { padding: 12px 18px; border-radius: 18px; max-width: 85%; line-height: 1.6; font-size: 0.95rem; }
-        .bot { background: white; align-self: flex-start; box-shadow: 0 2px 8px rgba(0,0,0,0.05); white-space: pre-wrap; border: 1px solid #f1f5f9; }
-        .user { background: var(--primary); color: white; align-self: flex-end; }
-        .footer { padding: 15px; background: white; display: flex; gap: 10px; border-top: 1px solid #e2e8f0; }
-        input { flex: 1; border: 1px solid #cbd5e1; padding: 12px 20px; border-radius: 25px; outline: none; font-family: 'Prompt'; }
-        button { background: var(--primary); color: white; border: none; padding: 0 25px; border-radius: 25px; cursor: pointer; }
-        .loader { display: none; text-align: center; font-size: 12px; color: #64748b; margin: 10px; }
+        :root {
+            --primary: #0d9488;
+            --primary-light: #2dd4bf;
+            --accent: #f0fdfa;
+            --text-dark: #134e4a;
+            --white-glass: rgba(255, 255, 255, 0.95);
+            --radius-xl: 28px;
+        }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, var(--accent) 0%, #e0f2f1 100%);
+            margin: 0; min-height: 100vh;
+            display: flex; flex-direction: column;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center; padding: 60px 20px; flex: 1;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .hero-mascot {
+            width: 150px; animation: float 4s ease-in-out infinite;
+            filter: drop-shadow(0 10px 20px rgba(13,148,136,0.2));
+        }
+        .hero-title { font-size: 1.8rem; color: var(--primary); margin: 15px 0 5px; }
+        .hero-subtitle { font-size: 1rem; color: #52796f; }
+
+        /* Floating Button */
+        .chat-fab-container { position: fixed; bottom: 30px; right: 30px; z-index: 1000; text-align: right; }
+        .chat-fab-label {
+            background: white; padding: 8px 15px; border-radius: 20px;
+            font-size: 0.85rem; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 10px; display: inline-block;
+        }
+        .chat-fab {
+            width: 65px; height: 65px; background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 8px 20px rgba(13,148,136,0.3); transition: 0.3s;
+        }
+        .chat-fab:hover { transform: scale(1.1); }
+
+        /* Chat Window */
+        .chat-window {
+            position: fixed; bottom: 110px; right: 30px;
+            width: 360px; height: 500px; max-height: 75vh;
+            background: var(--white-glass); border-radius: var(--radius-xl);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            display: none; flex-direction: column; overflow: hidden; z-index: 999;
+            animation: popIn 0.3s ease-out;
+        }
+        .chat-header {
+            background: var(--primary); color: white; padding: 15px 20px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .chat-header-user { display: flex; align-items: center; gap: 10px; }
+        .chat-header img { width: 35px; background: white; border-radius: 50%; padding: 3px; }
+
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px 15px; border-radius: 15px; font-size: 0.9rem; max-width: 85%; line-height: 1.5; }
+        .msg-bot { background: white; align-self: flex-start; border-bottom-left-radius: 2px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .msg-user { background: var(--primary); color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+
+        .chat-footer { padding: 15px; background: white; display: flex; gap: 8px; }
+        .chat-input { flex: 1; border: 1px solid #e2e8f0; padding: 10px 15px; border-radius: 20px; outline: none; font-family: inherit; }
+        .send-btn { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.9) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
     </style>
 </head>
 <body>
-    <div class="header">น้องใบบุญ (ผู้ช่วยแพทย์แผนไทย-จีน)</div>
-    <div class="chat-container" id="chatBox">
-        <div class="msg bot">สวัสดีค่ะ <b>ผู้รับบริการ</b> มีข้อสงสัยเรื่องการใช้ยา ข้อควรระวัง หรือยาที่กินร่วมกันไม่ได้ สอบถามน้องใบบุญได้เลยนะคะ</div>
+
+    <div class="hero-section">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png" class="hero-mascot">
+        <h1 class="hero-title">โรงพยาบาลสะเดา</h1>
+        <p class="hero-subtitle">ผู้ช่วยอัจฉริยะแพทย์แผนไทย</p>
     </div>
-    <div id="loading" class="loader">น้องใบบุญกำลังวิเคราะห์ข้อมูล...</div>
-    <div class="footer">
-        <input type="text" id="userInput" placeholder="พิมพ์ชื่อยาหรืออาการ..." autocomplete="off">
-        <button onclick="send()">ส่ง</button>
+
+    <div class="chat-fab-container">
+        <div class="chat-fab-label">ถามเรื่องยาสมุนไพรที่นี่ค่ะ 👇</div><br>
+        <div class="chat-fab" onclick="toggleChat()">
+            <img src="https://cdn-icons-png.flaticon.com/512/4712/4712070.png" width="40">
+        </div>
+    </div>
+
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div class="chat-header-user">
+                <img src="https://cdn-icons-png.flaticon.com/512/4712/4712109.png">
+                <div>
+                    <div style="font-weight: 500;">น้องใบบุญ AI</div>
+                    <div style="font-size: 0.7rem; opacity: 0.8;">● กำลังออนไลน์</div>
+                </div>
+            </div>
+            <i class="fas fa-times" style="cursor:pointer" onclick="toggleChat()"></i>
+        </div>
+        <div class="chat-body" id="chatBody">
+            <div class="msg msg-bot">สวัสดีค่ะ น้องใบบุญยินดีให้คำปรึกษาด้านยาสมุนไพร รพ.สะเดา ค่ะ สอบถามข้อมูลยาหรือการใช้ยาได้เลยนะคะ 🙏</div>
+        </div>
+        <div id="loading" style="display:none; padding: 5px 20px; font-size: 0.75rem; color: #666;">น้องใบบุญกำลังหาคำตอบ...</div>
+        <div class="chat-footer">
+            <input type="text" id="chatInput" class="chat-input" placeholder="พิมพ์ชื่อยา หรืออาการ..." autocomplete="off">
+            <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
     </div>
 
     <script>
-        // *** สำคัญ: นำ URL ที่ได้จากขั้นตอน "Deploy" ใหม่มาใส่ที่นี่ ***
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQKDaHWzzb2PIuend4HS62cDD0qrGQmtFOzvKMYBzNGcv7Wj4LxVsTz_HfAmtvJbbzsA/exec"; 
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyQKDaHWzzb2PIuend4HS62cDD0qrGQmtFOzvKMYBzNGcv7Wj4LxVsTz_HfAmtvJbbzsA/exec";
 
-        async function send() {
-            const input = document.getElementById('userInput');
-            const text = input.value.trim();
-            if(!text) return;
+        function toggleChat() {
+            const win = document.getElementById('chatWindow');
+            win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+        }
 
-            append('user', text);
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const msg = input.value.trim();
+            if (!msg) return;
+
+            appendMsg(msg, 'user');
             input.value = '';
             document.getElementById('loading').style.display = 'block';
 
             try {
-                const response = await fetch(WEB_APP_URL, {
+                const res = await fetch(WEB_APP_URL, {
                     method: 'POST',
-                    headers: { "Content-Type": "text/plain" },
-                    body: JSON.stringify({ message: text })
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ message: msg })
                 });
-                const data = await response.json();
+                const data = await res.json();
+                appendMsg(data.reply, 'bot');
+            } catch (e) {
+                appendMsg("ขออภัยค่ะ ไม่สามารถเชื่อมต่อระบบได้", 'bot');
+            } finally {
                 document.getElementById('loading').style.display = 'none';
-                
-                if(data.status === 'success') {
-                    append('bot', data.reply);
-                } else {
-                    append('bot', "ขออภัยค่ะ ระบบขัดข้อง: " + data.reply);
-                }
-            } catch (err) {
-                document.getElementById('loading').style.display = 'none';
-                append('bot', "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ (Connection Error)");
             }
         }
 
-        function append(sender, text) {
-            const box = document.getElementById('chatBox');
+        function appendMsg(text, side) {
+            const body = document.getElementById('chatBody');
             const div = document.createElement('div');
-            div.className = `msg ${sender}`;
-            div.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-            box.appendChild(div);
-            box.scrollTop = box.scrollHeight;
+            div.className = `msg msg-${side}`;
+            div.innerText = text;
+            body.appendChild(div);
+            body.scrollTop = body.scrollHeight;
         }
 
-        document.getElementById('userInput').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') send();
-        });
+        document.getElementById('chatInput').onkeypress = (e) => { if(e.key==='Enter') sendMessage(); };
     </script>
 </body>
 </html>
